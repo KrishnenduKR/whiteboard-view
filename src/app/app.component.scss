@@ -1,0 +1,27 @@
+.canvasstyle{
+    width:99%;
+    height: 88%;
+    cursor:pointer;
+    position: absolute;
+}
+
+canvas{
+    border-style: solid;
+}
+
+mat-icon{
+    padding-right: 20px;
+}
+
+.example-spacer {
+    flex: 1 1 auto;
+  }
+
+.color-box{
+    width: 30px;
+    height: 30px;
+}
+
+mat-menu-item{
+    width: 50px;
+}
