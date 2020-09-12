@@ -52,7 +52,7 @@ export class AppComponent implements OnInit {
     this.ctx.lineWidth = 5;
     this.ctx.lineJoin = 'round';
     this.ctx.lineCap = 'round';
-   
+    
     //this.canvas.nativeElement.addEventListener('mousedown', this.onMouseDown, false);
     //this.canvas.nativeElement.addEventListener('mouseup', this.onMouseUp, false);
     //this.canvas.nativeElement.addEventListener('mouseout', this.onMouseUp, false);
@@ -61,7 +61,6 @@ export class AppComponent implements OnInit {
     //this.socket.on('drawing', this.onDrawingEvent);
     //this.onResize();
     this.begin();
-     
   }
 
   setMouseValues(){
@@ -74,32 +73,29 @@ export class AppComponent implements OnInit {
   }
 
   begin(){
+    this.loop()
     var self = this;
     this.canvas.nativeElement.onmousedown = function (e) { 
        self.mouse.click = true;
-       console.log(self.mouse.click)
     };
 
     this.canvas.nativeElement.onmouseup = function (e) { 
       self.mouse.click = false; 
-      console.log('up',self.mouse.click)
     };
       
     this.canvas.nativeElement.onmousemove = function (e) {
-      //var rect = this.getBoundingClientRect();
-        
-        //self.mouse.pos.x = e.clientX - rect.left,
-        //self.mouse.pos.y = e.clientY - rect.top;
+      var rect = self.canvas.nativeElement.getBoundingClientRect(); 
+        self.mouse.pos.x = e.clientX - rect.left,
+        self.mouse.pos.y = e.clientY - rect.top;
         self.mouse.move = true;
 
       };
-
-      this.loop();
+      this.loop()
   }
 
   drawD(data){
     var line = data.line;
-    this.ctx.strokeStyle = "#df4b26";
+    this.ctx.strokeStyle = "#e80914";
     this.ctx.beginPath();
     this.ctx.moveTo(line[0].x, line[0].y);
     this.ctx.lineTo(line[1].x, line[1].y);
@@ -109,12 +105,11 @@ export class AppComponent implements OnInit {
     
     loop() {
       if (this.mouse.click && this.mouse.move && this.mouse.pos_prev) {
-        console.log(this.mouse.click)
         this.drawD({ line: [this.mouse.pos, this.mouse.pos_prev] })
         this.mouse.move = false;
       }
       this.mouse.pos_prev = { x: this.mouse.pos.x, y: this.mouse.pos.y };
-      setTimeout(this.loop, 100);
+      setTimeout(() => this.loop(), 400);
     }
       
   onBrushClick(){
