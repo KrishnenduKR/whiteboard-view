@@ -32,7 +32,8 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "src/js/main-x.js"
+              "src/js/socket.io.js"
+            //  "src/js/main-x.js"
             ]
           },
           "configurations": {
@@ -129,5 +130,8 @@
       }
     }
   },
-  "defaultProject": "board"
+  "defaultProject": "board",
+  "cli": {
+    "analytics": false
+  }
 }

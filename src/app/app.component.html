@@ -1,17 +1,17 @@
-<mat-toolbar color="primary">
-    <mat-icon>home</mat-icon>
-    <span class="example-spacer"></span>
-    <button mat-icon-button [matMenuTriggerFor]="menu"><mat-icon matTooltip="Colors">color_lens</mat-icon></button>
-    <mat-menu #menu="matMenu">
-      <button *ngFor="let item of colorArray" mat-menu-item>
-        <div class="color-box" [style.background-color]="item"></div>
-      </button>
-    </mat-menu>
-    <button mat-icon-button (click)="onBrushClick()"><mat-icon matTooltip="brush">brush</mat-icon>
-    </button>
-    <mat-slider *ngIf="brushClick" thumbLabel>
-    </mat-slider>
-    <button mat-icon-button><mat-icon matTooltip="Pencil">edit</mat-icon></button>
-    <button mat-icon-button><mat-icon matTooltip="Clear screen">refresh</mat-icon></button>
-</mat-toolbar>
 <canvas #canvas class="canvasstyle"></canvas>
+<mat-toolbar color="primary" class="toolbar-t">
+  <mat-icon>home</mat-icon>
+  <span class="example-spacer"></span>
+  <button mat-icon-button [matMenuTriggerFor]="menu"><mat-icon matTooltip="Colors">color_lens</mat-icon></button>
+  <mat-menu #menu="matMenu">
+    <button *ngFor="let item of colorArray" mat-menu-item>
+      <div class="color-box" [style.background-color]="item"></div>
+    </button>
+  </mat-menu>
+  <button mat-icon-button (click)="onBrushClick()"><mat-icon matTooltip="brush">brush</mat-icon>
+  </button>
+  <mat-slider *ngIf="brushClick" thumbLabel>
+  </mat-slider>
+  <button mat-icon-button><mat-icon matTooltip="Pencil">edit</mat-icon></button>
+  <button mat-icon-button><mat-icon matTooltip="Clear screen">refresh</mat-icon></button>
+</mat-toolbar>
