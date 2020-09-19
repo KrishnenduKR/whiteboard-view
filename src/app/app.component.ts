@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
-import * as io from 'socket.io-client';
+import * as io from '../js/socket.io.js';
+import { MousefunctionService } from './services/mousefunction.service';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +12,8 @@ export class AppComponent implements OnInit {
 
   colorArray:any;
   brushClick : boolean = false;
+  selectedColor ;
+  brushValue:number;
 
   width = window.innerWidth;
   height = window.innerHeight;
@@ -22,30 +25,29 @@ export class AppComponent implements OnInit {
   };
 
   drawing = false;
+  socket = io.connect('wss://socketio-whiteboard-zmx4.herokuapp.com');
 
   @ViewChild('canvas', { static: true })
   canvas: ElementRef<HTMLCanvasElement>;  
   
   private ctx: CanvasRenderingContext2D;
-  constructor() {
+  constructor( private mouseFnService : MousefunctionService ) {
    // this.setMouseValues()
   }
 
   ngOnInit(): void {
     this.colorArray = ["black","red", "green","blue","yellow","orange","brown","violet","indigo"];
-    var socket = io.connect('wss://socketio-whiteboard-zmx4.herokuapp.com');
+    
     this.ctx = this.canvas.nativeElement.getContext('2d');
     this.canvas.nativeElement.width = this.width;
     this.canvas.nativeElement.height = this.height;
-    this.ctx.lineWidth = 5;
+    this.brushValue = 5
     this.ctx.lineJoin = 'round';
     this.ctx.lineCap = 'round';
-    
+    this.selectedColor = "black";
     //this.canvas.nativeElement.addEventListener('mouseup', this.onMouseUp, false);
     //this.canvas.nativeElement.addEventListener('mouseout', this.onMouseUp, false);
     //this.canvas.nativeElement.addEventListener('mousemove', this.throttle(this.onMouseMove, 10), true);
-  
-    //this.socket.on('drawing', this.onDrawingEvent);
     //this.onResize();
 
     this.begin();
@@ -71,28 +73,27 @@ export class AppComponent implements OnInit {
       self.current.x = e.clientX;
       self.current.y = e.clientY;
     };
-
+    
     this.canvas.nativeElement.onmouseup = function (e) { 
       if (!self.drawing) { return; }
       self.drawing = false;
-      self.drawLine(self.current.x, self.current.y, e.clientX, e.clientY, self.current.color,2);
-  
+      self.mouseFnService.drawLine(self.ctx,self.current.x, self.current.y, e.clientX, e.clientY, self.selectedColor,self.brushValue)
     };
 
     this.canvas.nativeElement.onmouseout = function (e) { 
       if (!self.drawing) { return; }
       self.drawing = false;
-      self.drawLine(self.current.x, self.current.y, e.clientX, e.clientY, self.current.color,2);
+      self.mouseFnService.drawLine(self.ctx,self.current.x, self.current.y, e.clientX, e.clientY, self.selectedColor,self.brushValue)
     };
 
-    this.canvas.nativeElement.onmousemove = function (e) { 
-      self.throttle(self.onMouseMove(e), 10)
+    this.canvas.nativeElement.onmousemove = function (e) {
+      self.mouseFnService.throttle(self.onMouseMove(e), 10)
+       
     };
 
     //Touch support for mobile devices
 
     this.canvas.nativeElement.ontouchstart = function (e) { 
-      console.log(self.current);
       self.drawing = true;
       self.current.x = e.touches[0].clientX;
       self.current.y = e.touches[0].clientY;
@@ -102,51 +103,34 @@ export class AppComponent implements OnInit {
 
   onMouseMove(e){
     if (!this.drawing) { return; }
-    this.drawLine(this.current.x, this.current.y, e.clientX, e.clientY, this.current.color,2);
+    this.mouseFnService.drawLine(this.ctx,this.current.x, this.current.y, e.clientX, e.clientY, this.selectedColor,this.brushValue)
     this.current.x = e.clientX;
     this.current.y = e.clientY;
   }
 
-  drawD(data){
-    var line = data.line;
-    this.ctx.strokeStyle = "#e80914";
-    this.ctx.beginPath();
-    this.ctx.moveTo(line[0].x, line[0].y);
-    this.ctx.lineTo(line[1].x, line[1].y);
-    this.ctx.stroke();
-    this.ctx.closePath();
-    }
-    
-      
   onBrushClick(){
     this.brushClick = true;
+    this.selectedColor = 'black'
   }
 
+  changeColor(color){
+    this.selectedColor = color;
+  }
 
+  changeBrushValue(e){
+     this.brushValue = e.value
+  }
 
-
+  eraser(){
+    this.selectedColor = 'white'
+  }
 
   onDrawingEvent(dataX){
     var data = dataX.line;
     var w = this.canvas.nativeElement.width ;
     var h = this.canvas.nativeElement.height;
-    this.drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color,data.lineWidth);
-
-  }
-
-  drawLine(x0, y0, x1, y1, color,lineWidthLoc){
-
-    this.ctx.lineJoin = 'round';
-    this.ctx.lineCap = 'round';
-
-    this.ctx.beginPath();
-    this.ctx.moveTo(x0, y0);
-    this.ctx.lineTo(x1, y1);
-    this.ctx.strokeStyle = color;
-    this.ctx.lineWidth = lineWidthLoc;
+    this.mouseFnService.drawLine(this.ctx,data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color,data.lineWidth)
     
-    this.ctx.stroke();
-    this.ctx.closePath();
   }
 
 

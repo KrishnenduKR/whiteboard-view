@@ -33,7 +33,6 @@
             ],
             "scripts": [
               "src/js/socket.io.js"
-            //  "src/js/main-x.js"
             ]
           },
           "configurations": {

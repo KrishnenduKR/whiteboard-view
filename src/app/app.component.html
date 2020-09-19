@@ -4,14 +4,17 @@
   <span class="example-spacer"></span>
   <button mat-icon-button [matMenuTriggerFor]="menu"><mat-icon matTooltip="Colors">color_lens</mat-icon></button>
   <mat-menu #menu="matMenu">
-    <button *ngFor="let item of colorArray" mat-menu-item>
+    <button *ngFor="let item of colorArray" mat-menu-item (click)="changeColor(item)">
       <div class="color-box" [style.background-color]="item"></div>
     </button>
   </mat-menu>
-  <button mat-icon-button (click)="onBrushClick()"><mat-icon matTooltip="brush">brush</mat-icon>
+  <button mat-icon-button (click)="onBrushClick()"><mat-icon matTooltip="Brush">brush</mat-icon>
   </button>
-  <mat-slider *ngIf="brushClick" thumbLabel>
+  <mat-slider *ngIf="brushClick" thumbLabel (input)="changeBrushValue($event)">
   </mat-slider>
   <button mat-icon-button><mat-icon matTooltip="Pencil">edit</mat-icon></button>
+  <button mat-icon-button><mat-icon matTooltip="Erase" (click)=eraser()>cleaning_services</mat-icon></button>
+  <button mat-icon-button><mat-icon matTooltip="Undo">undo</mat-icon></button>
+  <button mat-icon-button><mat-icon matTooltip="Redo">redo</mat-icon></button>
   <button mat-icon-button><mat-icon matTooltip="Clear screen">refresh</mat-icon></button>
 </mat-toolbar>
