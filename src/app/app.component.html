@@ -1,4 +1,4 @@
-<canvas #canvas class="canvasstyle"></canvas>
+<canvas #canvas [ngStyle]="{'cursor': 'url(' + backgroundUrl}" class="canvasstyle"></canvas>
 <mat-toolbar color="primary" class="toolbar-t">
   <mat-icon>home</mat-icon>
   <span class="example-spacer"></span>
@@ -12,9 +12,9 @@
   </button>
   <mat-slider *ngIf="brushClick" thumbLabel (input)="changeBrushValue($event)">
   </mat-slider>
-  <button mat-icon-button><mat-icon matTooltip="Pencil">edit</mat-icon></button>
+  <button mat-icon-button><mat-icon matTooltip="Pencil"(click)=pencil() >edit</mat-icon></button>
   <button mat-icon-button><mat-icon matTooltip="Erase" (click)=eraser()>cleaning_services</mat-icon></button>
   <button mat-icon-button><mat-icon matTooltip="Undo">undo</mat-icon></button>
   <button mat-icon-button><mat-icon matTooltip="Redo">redo</mat-icon></button>
-  <button mat-icon-button><mat-icon matTooltip="Clear screen">refresh</mat-icon></button>
+  <button mat-icon-button><mat-icon matTooltip="Clear screen"  (click)=clearScreen()  >refresh</mat-icon></button>
 </mat-toolbar>

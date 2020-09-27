@@ -9,6 +9,7 @@ import { MousefunctionService } from './services/mousefunction.service';
 })
 export class AppComponent implements OnInit {
   title = 'board';
+  backgroundUrl="/assets/images/pencil-32-icon.png) 3 24, pointer"
 
   colorArray:any;
   brushClick : boolean = false;
@@ -41,7 +42,7 @@ export class AppComponent implements OnInit {
     this.ctx = this.canvas.nativeElement.getContext('2d');
     this.canvas.nativeElement.width = this.width;
     this.canvas.nativeElement.height = this.height;
-    this.brushValue = 5
+    this.brushValue = 2
     this.ctx.lineJoin = 'round';
     this.ctx.lineCap = 'round';
     this.selectedColor = "black";
@@ -51,7 +52,41 @@ export class AppComponent implements OnInit {
     //this.onResize();
 
     this.begin();
+    // this.socket.on('drawing', this.onDrawingEvent);
+    var thisCopy = this;
+    this.socket.on('drawing', function (data) {
+      thisCopy.onDrawingEvent(data,thisCopy);
+    });  
   }
+
+
+  onDrawingEvent(dataX,thisCopy){
+    
+    if (dataX.action) { // this is to clear screen
+      this.canvas.nativeElement.width = this.width;
+    this.canvas.nativeElement.height = this.height;
+    }else if(dataX.line){
+      console.log(dataX)
+      var data =  dataX.line;
+      var w = this.canvas.nativeElement.width;
+      var h = this.canvas.nativeElement.height;
+      thisCopy.mouseFnService.drawLine(this.ctx,data.x0 * w,  data.y0 * h, data.x1 * w,  data.y1 * h, data.color,data.lineWidth)
+    }
+  }
+
+  testt(){
+    console.log(this);
+  }
+
+  /*
+  onDrawingEvent(dataX){
+    var data = dataX.line;
+    var w = this.canvas.nativeElement.width ;
+    var h = this.canvas.nativeElement.height;
+    this.mouseFnService.drawLine(this.ctx,data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color,data.lineWidth)
+    
+  }
+*/
 
  throttle(callback, delay) {
     var previousCall = new Date().getTime();
@@ -111,6 +146,7 @@ export class AppComponent implements OnInit {
   onBrushClick(){
     this.brushClick = true;
     this.selectedColor = 'black'
+    this.backgroundUrl="/assets/images/pencil-32-icon.png) 5 26, pointer"
   }
 
   changeColor(color){
@@ -123,15 +159,23 @@ export class AppComponent implements OnInit {
 
   eraser(){
     this.selectedColor = 'white'
+    this.backgroundUrl="/assets/images/eraser-tool.png) 5 48, pointer" 
+
   }
 
-  onDrawingEvent(dataX){
-    var data = dataX.line;
-    var w = this.canvas.nativeElement.width ;
-    var h = this.canvas.nativeElement.height;
-    this.mouseFnService.drawLine(this.ctx,data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color,data.lineWidth)
+  pencil(){
+    this.brushClick = true;
+    this.selectedColor = 'black'
+    this.backgroundUrl="/assets/images/pencil-32-icon.png) 3 24, pointer"
     
   }
+
+  clearScreen(){
+    this.canvas.nativeElement.width = this.width;
+    this.canvas.nativeElement.height = this.height;
+    this.socket.emit('drawing', { action: "clear" });
+  }
+
 
 
 }
